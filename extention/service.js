@@ -1,11 +1,11 @@
-chrome.commands.onCommand.addListener((command) => {
-    if (command === 'inject_html') {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const activeTab = tabs[0];
-        chrome.tabs.sendMessage(activeTab.id, { action: 'inject_html' });
-      });
-    }
-  });
+// chrome.commands.onCommand.addListener((command) => {
+//     if (command === 'inject_html') {
+//       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+//         const activeTab = tabs[0];
+//         chrome.tabs.sendMessage(activeTab.id, { action: 'inject_html' });
+//       });
+//     }
+//   });
 
 let contextMenuItem = {
   "id":"Note",

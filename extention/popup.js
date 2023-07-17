@@ -18,16 +18,21 @@ const rb = document.getElementById('reset-button');
 rb.addEventListener('click',()=>{
     chrome.storage.sync.clear();
 })
-chrome.storage.sync.get(['counter']).then((result)=>{
-    var c = result.counter
-    setTimeout(()=>{
-        if (typeof(c)== "undefined"){
-            chrome.storage.sync.set({'counter':'1'})
-            alert(typeof(c))
-        }
+// chrome.storage.sync.get(['counter']).then((result)=>{
+//     var c = result.counter
+//     setTimeout(()=>{
+//         if (typeof(c)== "undefined"){
+//             chrome.storage.sync.set({'counter':'1'})
+//             chrome.storage.sync.set({'TBC':'0,0,0,0'})
+//             chrome.storage.sync.set({'wSize':'300'})
+//             chrome.storage.sync.set({'hSize':'150'})
+//             chrome.storage.sync.set({'top':'150'})
+//             chrome.storage.sync.set({'left':'150'})
+//             alert(typeof(c))
+//         }
         
-    },1000)
-})
+//     },1000)
+// })
 
 
 
