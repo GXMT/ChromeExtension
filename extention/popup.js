@@ -1,54 +1,60 @@
-const cb = document.getElementById('cancel-button');
-cb.addEventListener('click',()=>{
-    window.close();
+var slider1 = document.getElementById("opacityRange");
+var slider2 = document.getElementById("fontSizeRange");
+var output1 = document.getElementById("demo");
+var output2 = document.getElementById("demo2");
+var colorPallete1 = document.getElementById("color-picker1");
+var colorPallete2 = document.getElementById("color-picker2");
+
+
+
+ // Display the default slider value
+chrome.storage.sync.get('backgroundOpacity').then((result)=>{
+    slider1.value = result.backgroundOpacity;
+    output1.innerHTML = slider1.value;
 })
-const sb = document.getElementById('save-button');
-sb.addEventListener('click',()=>{
-    var value = document.getElementById('note-textarea').value;
-    document.getElementById('note-textarea').value = "";
-    chrome.storage.sync.set({'mytext':value},()=>{alert('saved')});
+chrome.storage.sync.get('textSize').then((result)=>{
+    slider2.value = result.textSize.replace('px','');
+    output2.innerHTML = slider2.value;
 })
-const vb = document.getElementById('view-button');
-vb.addEventListener('click',()=>{
-    chrome.storage.sync.get(['mytext']).then((result)=>{
-        document.getElementById('note-textarea').value = result.mytext;
-    })
+chrome.storage.sync.get('textColor').then((result)=>{
+    console.log(result.textColor);
+    colorPallete2.value = result.textColor;
 })
+chrome.storage.sync.get('TBC').then((result)=>{
+    colorPallete1.value = result.TBC;
+})
+// Update the current slider value (each time you drag the slider handle)
+slider1.oninput = function() {
+  output1.innerHTML = this.value;
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const activeTab = tabs[0];
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'opacityChange', data: this.value });
+    });
+}
+slider2.oninput = function() {
+    output2.innerHTML = this.value;
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          const activeTab = tabs[0];
+          chrome.tabs.sendMessage(tabs[0].id, { action: 'fontSizeChange', data: this.value });
+      });
+  }
+colorPallete1.addEventListener('input', function(event) {
+    const selectedColor = event.target.value;
+    console.log(selectedColor);
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const activeTab = tabs[0];
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'TBC', data: event.target.value });
+    });
+});
+colorPallete2.addEventListener('input', function(event) {
+    const selectedColor = event.target.value;
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const activeTab = tabs[0];
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'textColor', data: event.target.value });
+    });
+});
+
 const rb = document.getElementById('reset-button');
 rb.addEventListener('click',()=>{
     chrome.storage.sync.clear();
-})
-// chrome.storage.sync.get(['counter']).then((result)=>{
-//     var c = result.counter
-//     setTimeout(()=>{
-//         if (typeof(c)== "undefined"){
-//             chrome.storage.sync.set({'counter':'1'})
-//             chrome.storage.sync.set({'TBC':'0,0,0,0'})
-//             chrome.storage.sync.set({'wSize':'300'})
-//             chrome.storage.sync.set({'hSize':'150'})
-//             chrome.storage.sync.set({'top':'150'})
-//             chrome.storage.sync.set({'left':'150'})
-//             alert(typeof(c))
-//         }
-        
-//     },1000)
-// })
-
-
-
-const tb = document.getElementById('test-button');
-tb.addEventListener('click',()=>{
-    var num
-    chrome.storage.sync.get(['counter']).then((result)=>{
-        num = result.counter;
-    })
-    setTimeout(() => {
-        var value = document.getElementById('note-textarea').value;
-        chrome.storage.sync.set({["n"+num]:value});
-        chrome.storage.sync.set({'counter': String(parseInt(num)+1)});
-    }, 2000);
-})
-const lb = document.getElementById('list-button');
-lb.addEventListener('click',()=>{
-    chrome.tabs.create({url: "list.html"});
 })
